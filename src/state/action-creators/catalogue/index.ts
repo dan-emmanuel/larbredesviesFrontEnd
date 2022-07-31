@@ -9,7 +9,10 @@
   The actions-creators are:
     @action filterCatalogue
     @action setCheckedCategory
-
+    @createProduct
+    @deleteProduct
+    @updateProduct
+    @createCategory
 
   )
 */

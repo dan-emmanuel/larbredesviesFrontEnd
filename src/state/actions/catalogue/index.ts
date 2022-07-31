@@ -1,4 +1,3 @@
-import { createCategory } from "./../../action-creators/catalogue/index";
 /*
   Actions/catalogue
   ------------------------------------------------------------

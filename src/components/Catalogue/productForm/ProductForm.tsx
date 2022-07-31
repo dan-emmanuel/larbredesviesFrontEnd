@@ -52,8 +52,10 @@ const ProductForm = (props: FormProps) => {
   const [showPlus, setShowPlus] = useState(false);
 
   const dispatch = useDispatch();
-  const { createProduct, updateProduct, deleteProduct, createCategory } =
-    bindActionCreators(catalogueActionCreators, dispatch);
+  const { createProduct, updateProduct, deleteProduct } = bindActionCreators(
+    catalogueActionCreators,
+    dispatch
+  );
   const product =
     props.type !== "create"
       ? products.find((prod) => prod.id === props.id)
