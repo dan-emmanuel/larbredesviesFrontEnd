@@ -4,8 +4,16 @@
   props :
 
   Components  :
-    - CustomerRow
-    - Table
+    -Button,
+    -Col,
+    -Container,
+    -Row,
+    -Table,
+    -Form,
+    Dropdown,
+    -CustomerRow
+    -PageSelector
+    -CreateCustomerModal
 
   States :
     - customers : array of customers
@@ -21,7 +29,7 @@
 */
 
 //components
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Col,
@@ -31,8 +39,9 @@ import {
   Form,
   Dropdown,
 } from "react-bootstrap";
-import ClientRow from "./customerRow/CustomerRow";
+import CustomerRow from "./customerRow/CustomerRow";
 import PageSelector from "./PageSelector";
+import CreateCustomerModal from "./customerRow/CreateCustomerModal";
 // store
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -41,7 +50,6 @@ import { State, CustomerTypes, customerActionCreators } from "../../state";
 //components
 
 //style & assets
-import "./style.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
@@ -61,10 +69,18 @@ const CareMain = () => {
   );
   const dispatch = useDispatch();
 
-  const { filterCustomers, ordercustomers } = bindActionCreators(
+  const { filterCustomers, ordercustomers, getcustomers } = bindActionCreators(
     customerActionCreators,
     dispatch
   );
+  const bottomRef = useRef(null);
+  const handleScroll = () => {
+    setScroll(true);
+  };
+  const [scroll, setScroll] = useState(false);
+  useEffect(() => {
+    getcustomers();
+  }, []);
 
   return (
     <>
@@ -75,7 +91,14 @@ const CareMain = () => {
           </Col>
 
           <Col xs="auto">
-            <Button variant="outline-primary">Ajouter un client</Button>
+            <CreateCustomerModal
+              setCurrentPage={setCurrentPage}
+              setIsascending={setIsascending}
+              setSortBy={setSortBy}
+              nbCustomersPerPage={nbCustomersPerPage}
+              nbCustomer={customers.length}
+              handleScroll={handleScroll}
+            />
           </Col>
         </Row>
         <Row className="justify-content-between">
@@ -126,6 +149,8 @@ const CareMain = () => {
                 ["Siret", "siret"],
                 ["Téléphone", "tel"],
                 ["Email", "email"],
+                ["Mot de passe", "password"],
+
                 ["Address", "address"],
                 ["Code postal", "cp"],
                 ["Solde", "solde_init"],
@@ -167,15 +192,16 @@ const CareMain = () => {
                   </th>
                 );
               })}
-              <th>Actions</th>
+              <th> Actions</th>
             </tr>
           </thead>
           <tbody>
             {customerToShow.map((customer: CustomerTypes.Customer) => (
-              <ClientRow key={customer.id} customer={customer} />
+              <CustomerRow type="edit" key={customer.id} customer={customer} />
             ))}
           </tbody>
         </Table>
+        <div ref={bottomRef} />
         <Row className="justify-content-between">
           <Col xs="auto">
             <Dropdown>

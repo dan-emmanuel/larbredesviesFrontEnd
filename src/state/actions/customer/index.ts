@@ -15,7 +15,7 @@ interface filtercustomers {
 }
 interface addcustomer {
   type: ActionType.ADDCUSTOMER;
-  payload: Omit<CustomerTypes.Customer, "id" | "solde_init">;
+  payload: CustomerTypes.Customer | string;
 }
 interface deletecustomer {
   type: ActionType.DELETECUSTOMER;
@@ -37,6 +37,9 @@ interface ordercustomers {
   type: ActionType.ORDERCUSTOMERS;
   payload: { key: keyof CustomerTypes.Customer; asc: "asc" | "desc" };
 }
+interface setnoerror {
+  type: ActionType.SETNOERROR;
+}
 
 export type Action =
   | filtercustomers
@@ -45,4 +48,5 @@ export type Action =
   | updatecustomer
   | getcustomers
   | getcustomer
-  | ordercustomers;
+  | ordercustomers
+  | setnoerror;

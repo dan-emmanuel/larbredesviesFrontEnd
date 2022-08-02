@@ -22,6 +22,7 @@ import { Dispatch } from "redux";
 import { Action } from "../../actions/customer";
 import { ActionType } from "../../action-types/customer";
 import { CustomerTypes } from "../..";
+import axios from "axios";
 
 export const filterCustomers = (text: string) => ({
   type: ActionType.FILTERCUSTOMERS,
@@ -31,11 +32,23 @@ export const addcustomer = (
   e: Omit<CustomerTypes.Customer, "id" | "solde_init">
 ) => {
   try {
-    return (dispatch: Dispatch<Action>) =>
-      dispatch({
-        type: ActionType.ADDCUSTOMER,
-        payload: e,
+    return async (dispatch: Dispatch<Action>) => {
+      const newClient = await axios({
+        method: "post",
+        url: `${process.env.REACT_APP_API_URL}customer`,
+        data: e,
       });
+      console.log(`________newClient________`, newClient?.data?.records?.error);
+      return newClient?.data?.records?.error
+        ? dispatch({
+            type: ActionType.ADDCUSTOMER,
+            payload: newClient?.data?.records?.error,
+          })
+        : dispatch({
+            type: ActionType.ADDCUSTOMER,
+            payload: newClient.data.records,
+          });
+    };
   } catch (e) {
     console.log(e);
   }
@@ -66,21 +79,38 @@ export const updatecustomer = (
 };
 export const getcustomers = () => {
   try {
-    return (dispatch: Dispatch<Action>) =>
+    return async (dispatch: Dispatch<Action>) => {
+      const clis = await axios({
+        method: "get",
+        url: `${process.env.REACT_APP_API_URL}customer/all`,
+      });
+      console.log(clis);
+
       dispatch({
         type: ActionType.GETCUSTOMERS,
-        payload: [],
+        payload: clis.data.records,
       });
+    };
   } catch (e) {
     console.log(e);
   }
 };
 export const getcustomer = (id: number) => {
   try {
-    return (dispatch: Dispatch<Action>) =>
+    return async (dispatch: Dispatch<Action>) =>
       dispatch({
         type: ActionType.GETCUSTOMER,
         payload: id,
+      });
+  } catch (e) {
+    console.log(e);
+  }
+};
+export const setNoError = () => {
+  try {
+    return (dispatch: Dispatch<Action>) =>
+      dispatch({
+        type: ActionType.SETNOERROR,
       });
   } catch (e) {
     console.log(e);
