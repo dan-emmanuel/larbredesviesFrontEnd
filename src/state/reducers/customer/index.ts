@@ -1,4 +1,3 @@
-import { setNoError } from "./../../action-creators/customer/index";
 /*
   This file contains the reducer's for the catalogue.
   ------------------------------------------------------------
@@ -5506,6 +5505,7 @@ const initState: CustomerState = {
   customers: [],
   selectedCustomerId: null,
   hasError: false,
+  total: 0,
 };
 
 export const customerReducer = (
@@ -5552,10 +5552,17 @@ export const customerReducer = (
     case ActionType.GETCUSTOMERS:
       console.log(action.payload);
 
-      return {
-        ...state,
-        customers: action.payload,
-      };
+      return action.payload.data.length > 0
+        ? {
+            ...state,
+            customers: action.payload.data,
+            total: action.payload.total,
+          }
+        : {
+            ...state,
+            customers: [],
+            total: 0,
+          };
     case ActionType.FILTERCUSTOMERS:
       return {
         ...state,
@@ -5565,19 +5572,7 @@ export const customerReducer = (
           )
         ),
       };
-    case ActionType.ORDERCUSTOMERS:
-      return {
-        ...state,
-        customers: [...initState.customers].sort((a, b) =>
-          action.payload.asc
-            ? a[action.payload.key] < b[action.payload.key]
-              ? 1
-              : -1
-            : a[action.payload.key] > b[action.payload.key]
-            ? 1
-            : -1
-        ),
-      };
+
     case ActionType.SETNOERROR:
       return {
         ...state,

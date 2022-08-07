@@ -25,12 +25,12 @@
 */
 
 //components
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // store
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { CustomerTypes, customerActionCreators } from "../../../state";
-import { Button, Row } from "react-bootstrap";
+import { Button, Row, Placeholder } from "react-bootstrap";
 import DeleteCustomerModal from "./DeleteCustomerModal";
 //style & assets
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -44,6 +44,18 @@ const CustomerRow = ({
   whithAction = true,
   noId = false,
   newCustomerState = undefined,
+  placeholder = false,
+  tdOrder = [
+    "id",
+    "name",
+    "siret",
+    "tel",
+    "email",
+    "password",
+    "address",
+    "cp",
+    "solde_init",
+  ],
 }: Props) => {
   const [isEditing, setIsEditing] = useState(isEdit);
   const [newCustomer, setNewCustomer] = useState(Object.assign({}, customer));
@@ -64,40 +76,67 @@ const CustomerRow = ({
       updatecustomer(newCustomer as CustomerTypes.Customer);
     }
   };
+
+  useEffect(() => {
+    setNewCustomer(Object.assign({}, customer));
+  }, [customer]);
   return (
     <>
       <tr key={customer.id}>
-        {!noId && <td width="5%">{customer.id}</td>}
-        {Object.entries(customer)
-          .filter(([key, value]) => key !== "id")
-          .map(([key, value], index) => (
-            <td key={index} width={key === "address" ? "15%" : "10%"}>
-              {isEditing ? (
-                <input
-                  type={key === "solde_init" ? "number" : "text"}
-                  className="w-100"
-                  defaultValue={value}
-                  name={key}
-                  onChange={(e) =>
-                    newCustomerState?.[1]({
-                      ...newCustomerState[0],
-                      [key]: e.target.value,
-                    }) ??
-                    setNewCustomer({ ...newCustomer, [key]: e.target.value })
-                  }
-                />
-              ) : (
-                value
-              )}
-            </td>
+        {!noId &&
+          (!placeholder ? (
+            <td width="5%">{customer.id}</td>
+          ) : (
+            <Placeholder as="td" animation="glow">
+              <Placeholder as="p" xs={12} className="h-100 m-0" />
+            </Placeholder>
           ))}
-        {whithAction && (
+        {!placeholder
+          ? tdOrder.map((key: string, index) => {
+              const value: any = customer[key as keyof typeof customer];
+              return (
+                <td key={index} width="10%">
+                  {isEditing ? (
+                    <input
+                      type={key === "solde_init" ? "number" : "text"}
+                      className="w-100"
+                      defaultValue={value}
+                      name={key}
+                      onChange={(e) =>
+                        newCustomerState?.[1]({
+                          ...newCustomerState[0],
+                          [key]: e.target.value,
+                        }) ??
+                        setNewCustomer({
+                          ...newCustomer,
+                          [key]: e.target.value,
+                        })
+                      }
+                    />
+                  ) : (
+                    value
+                  )}
+                </td>
+              );
+            })
+          : tdOrder.map((key: string, index) => {
+              return (
+                <Placeholder key={index} as="td" animation="glow">
+                  <Placeholder as="p" xs={12} className="h-100 m-0" />
+                </Placeholder>
+              );
+            })}
+        {whithAction && !placeholder && (
           <td width="10%">
             <Row className="justify-content-around">
               <Button
                 variant="outline-warning"
                 className={`col-auto ${isEditing ? "d-none" : ""}`}
-                onClick={() => setIsEditing(!isEditing)}
+                onClick={() => {
+                  console.log(newCustomer);
+
+                  setIsEditing(!isEditing);
+                }}
               >
                 <FontAwesomeIcon icon={faPen} />
               </Button>
