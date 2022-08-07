@@ -38,7 +38,8 @@ export const addcustomer = (
         url: `${process.env.REACT_APP_API_URL}customer`,
         data: e,
       });
-      console.log(`________newClient________`, newClient?.data?.records?.error);
+      console.log(newClient);
+
       return newClient?.data?.records?.error
         ? dispatch({
             type: ActionType.ADDCUSTOMER,
@@ -55,11 +56,18 @@ export const addcustomer = (
 };
 export const deletecustomer = (id: CustomerTypes.Customer["id"]) => {
   try {
-    return (dispatch: Dispatch<Action>) =>
-      dispatch({
-        type: ActionType.DELETECUSTOMER,
-        payload: id,
+    return async (dispatch: Dispatch<Action>) => {
+      const response = await axios({
+        method: "delete",
+        url: `${process.env.REACT_APP_API_URL}customer/${id}`,
       });
+      if (response.data.affected === 1) {
+        dispatch({
+          type: ActionType.DELETECUSTOMER,
+          payload: id,
+        });
+      }
+    };
   } catch (e) {
     console.log(e);
   }
@@ -68,23 +76,54 @@ export const updatecustomer = (
   e: Omit<CustomerTypes.Customer, "id" | "solde_init">
 ) => {
   try {
-    return (dispatch: Dispatch<Action>) =>
-      dispatch({
-        type: ActionType.UPDATECUSTOMER,
-        payload: e,
+    return async (dispatch: Dispatch<Action>) => {
+      const response = await axios({
+        method: "put",
+        url: `${process.env.REACT_APP_API_URL}customer`,
+        data: e,
       });
+      console.log(!response?.data?.records?.response?.error);
+      if (!response?.data?.records?.response?.error) {
+        dispatch({
+          type: ActionType.UPDATECUSTOMER,
+          payload: response?.data?.records?.response,
+        });
+      }
+    };
   } catch (e) {
     console.log(e);
   }
 };
-export const getcustomers = () => {
+export const getcustomers = ({
+  sortBy,
+  isAsc,
+  perPage,
+  page,
+}: {
+  sortBy: keyof CustomerTypes.Customer;
+  isAsc: "ASC" | "DESC";
+  perPage: number;
+  page: number;
+}) => {
   try {
     return async (dispatch: Dispatch<Action>) => {
+      dispatch({
+        type: ActionType.GETCUSTOMERS,
+        payload: {
+          data: [],
+          total: 0,
+        },
+      });
       const clis = await axios({
         method: "get",
         url: `${process.env.REACT_APP_API_URL}customer/all`,
+        params: {
+          sortBy,
+          isAsc,
+          perPage,
+          page,
+        },
       });
-      console.log(clis);
 
       dispatch({
         type: ActionType.GETCUSTOMERS,
@@ -116,7 +155,10 @@ export const setNoError = () => {
     console.log(e);
   }
 };
-export const ordercustomers = (key: string, asc: boolean) => ({
-  type: ActionType.ORDERCUSTOMERS,
-  payload: { key: key, asc: asc },
-});
+// export const ordercustomers = (
+//   key: Omit<keyof CustomerTypes.Customer, "crdate_creation" | "last_update">,
+//   asc: boolean
+// ) => ({
+//   type: ActionType.ORDERCUSTOMERS,
+//   payload: { key: key, asc: asc },
+// });

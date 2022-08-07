@@ -7,10 +7,10 @@ const PageSelector = ({
   nbCustomersPerPage,
   setCurrentPage,
 }: {
-  currentPage: any;
-  nbCustomer: any;
-  nbCustomersPerPage: any;
-  setCurrentPage: any;
+  currentPage: number;
+  nbCustomer: number;
+  nbCustomersPerPage: number;
+  setCurrentPage: (page: number) => void;
 }) => {
   const disableFirst = currentPage === 1;
   const showpaginnationPrev = currentPage > 2;

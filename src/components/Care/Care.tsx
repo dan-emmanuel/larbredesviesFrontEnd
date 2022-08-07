@@ -55,32 +55,39 @@ import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
 const CareMain = () => {
   const numberPerPageArrSelector = [10, 20, 50, 100];
-  const customers = useSelector((state: State) => state.customer.customers);
+  const { customers, total: nbCustomer } = useSelector(
+    (state: State) => state.customer
+  );
   const [nbCustomersPerPage, setnbCustomersPerPage] = useState(
     numberPerPageArrSelector[0]
   );
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isascending, setIsascending] = useState(true);
-  const [sortBy, setSortBy] = useState("id");
-  const customerToShow = customers.slice(
-    nbCustomersPerPage * currentPage - nbCustomersPerPage,
-    nbCustomersPerPage * currentPage
-  );
+  const [sortBy, setSortBy] = useState<keyof CustomerTypes.Customer>("id");
+
   const dispatch = useDispatch();
 
-  const { filterCustomers, ordercustomers, getcustomers } = bindActionCreators(
+  const { filterCustomers, getcustomers } = bindActionCreators(
     customerActionCreators,
     dispatch
   );
   const bottomRef = useRef(null);
-  const handleScroll = () => {
-    setScroll(true);
-  };
+
+  //eslint-disable-next-line
   const [scroll, setScroll] = useState(false);
+  const fetchCustomers = () => {
+    getcustomers({
+      sortBy,
+      isAsc: isascending ? "ASC" : "DESC",
+      perPage: nbCustomersPerPage,
+      page: currentPage,
+    });
+  };
   useEffect(() => {
-    getcustomers();
-  }, []);
+    fetchCustomers();
+    // eslint-disable-next-line
+  }, [currentPage, isascending, nbCustomersPerPage, sortBy]);
 
   return (
     <>
@@ -94,10 +101,8 @@ const CareMain = () => {
             <CreateCustomerModal
               setCurrentPage={setCurrentPage}
               setIsascending={setIsascending}
-              setSortBy={setSortBy}
               nbCustomersPerPage={nbCustomersPerPage}
-              nbCustomer={customers.length}
-              handleScroll={handleScroll}
+              nbCustomer={nbCustomer}
             />
           </Col>
         </Row>
@@ -114,6 +119,7 @@ const CareMain = () => {
                   onClick={() => {
                     setnbCustomersPerPage(nb);
                     setCurrentPage(1);
+                    fetchCustomers();
                   }}
                 >
                   {nb}
@@ -136,7 +142,7 @@ const CareMain = () => {
           <PageSelector
             nbCustomersPerPage={nbCustomersPerPage}
             currentPage={currentPage}
-            nbCustomer={customers.length}
+            nbCustomer={nbCustomer}
             setCurrentPage={setCurrentPage}
           />
         </Row>
@@ -144,24 +150,22 @@ const CareMain = () => {
           <thead>
             <tr>
               {[
-                ["Id", "id"],
-                ["Nom", "name"],
-                ["Siret", "siret"],
-                ["Téléphone", "tel"],
-                ["Email", "email"],
-                ["Mot de passe", "password"],
-
-                ["Address", "address"],
-                ["Code postal", "cp"],
-                ["Solde", "solde_init"],
+                ["Id", "id", "3%"],
+                ["Nom", "name", "10%"],
+                ["Siret", "siret", "5%"],
+                ["Téléphone", "tel", "10%"],
+                ["Email", "email", "10%"],
+                ["Mot de passe", "password", "10%"],
+                ["Address", "address", "10%"],
+                ["Code postal", "cp", "9%"],
+                ["Solde", "solde_init", "9%"],
               ].map((key) => {
                 return (
                   <th
                     key={key[1]}
                     onClick={() => {
                       setIsascending(sortBy === key[1] ? !isascending : true);
-                      setSortBy(key[1]);
-                      ordercustomers(key[1], isascending);
+                      setSortBy(key[1] as keyof CustomerTypes.Customer);
                       setCurrentPage(1);
                     }}
                   >
@@ -196,9 +200,48 @@ const CareMain = () => {
             </tr>
           </thead>
           <tbody>
-            {customerToShow.map((customer: CustomerTypes.Customer) => (
-              <CustomerRow type="edit" key={customer.id} customer={customer} />
-            ))}
+            {customers.length > 0
+              ? customers.map((customer: CustomerTypes.Customer) => (
+                  <CustomerRow
+                    type="edit"
+                    key={customer.id}
+                    customer={customer}
+                    tdOrder={[
+                      "name",
+                      "siret",
+                      "tel",
+                      "email",
+                      "password",
+                      "address",
+                      "cp",
+                      "solde_init",
+                    ]}
+                  />
+                ))
+              : Array(nbCustomersPerPage)
+                  .fill(
+                    new CustomerTypes.CustomerSclass(
+                      0,
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      0
+                    )
+                  )
+                  .map(
+                    (customer: CustomerTypes.CustomerSclass, index: number) => (
+                      <CustomerRow
+                        type="create"
+                        key={index}
+                        customer={customer}
+                        placeholder={true}
+                      />
+                    )
+                  )}
           </tbody>
         </Table>
         <div ref={bottomRef} />
@@ -237,7 +280,7 @@ const CareMain = () => {
           <PageSelector
             nbCustomersPerPage={nbCustomersPerPage}
             currentPage={currentPage}
-            nbCustomer={customers.length}
+            nbCustomer={nbCustomer}
             setCurrentPage={setCurrentPage}
           />
         </Row>

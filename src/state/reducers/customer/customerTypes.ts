@@ -15,6 +15,8 @@ export type Customer = {
   address: string;
   cp: string;
   solde_init: number;
+  crdate_creation?: string;
+  last_update?: string;
 };
 export class CustomerSclass {
   constructor(
@@ -26,12 +28,15 @@ export class CustomerSclass {
     public password: string,
     public address: string,
     public cp: string,
-    public solde_init: number
+    public solde_init: number,
+    public crdate_creation?: string,
+    public last_update?: string
   ) {}
 }
 
 export type CustomerState = {
-  customers: Customer[];
+  customers: Customer[] | [];
   selectedCustomerId: number | null;
   hasError: boolean | string;
+  total: number;
 };

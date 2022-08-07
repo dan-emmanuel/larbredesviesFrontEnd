@@ -27,16 +27,23 @@ interface updatecustomer {
 }
 interface getcustomers {
   type: ActionType.GETCUSTOMERS;
-  payload: CustomerTypes.Customer[];
+  payload:
+    | {
+        data: CustomerTypes.Customer[];
+        page: number;
+        perPage: number;
+        total: number;
+      }
+    | {
+        data: [];
+        total: number;
+      };
 }
 interface getcustomer {
   type: ActionType.GETCUSTOMER;
   payload: CustomerTypes.Customer["id"];
 }
-interface ordercustomers {
-  type: ActionType.ORDERCUSTOMERS;
-  payload: { key: keyof CustomerTypes.Customer; asc: "asc" | "desc" };
-}
+
 interface setnoerror {
   type: ActionType.SETNOERROR;
 }
@@ -48,5 +55,4 @@ export type Action =
   | updatecustomer
   | getcustomers
   | getcustomer
-  | ordercustomers
   | setnoerror;

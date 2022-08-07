@@ -1,7 +1,7 @@
 import { CustomerTypes } from "../../../state";
 
 export type Props = {
-  customer: Partial<CustomerTypes.Customer>;
+  customer: Partial<CustomerTypes.Customer> | CustomerTypes.CustomerSclass;
   isEdit?: boolean;
   type?: "create" | "edit";
   whithAction?: boolean;
@@ -12,4 +12,6 @@ export type Props = {
         React.Dispatch<Partial<CustomerTypes.Customer>>
       ]
     | undefined;
+  placeholder?: boolean;
+  tdOrder?: string[];
 };

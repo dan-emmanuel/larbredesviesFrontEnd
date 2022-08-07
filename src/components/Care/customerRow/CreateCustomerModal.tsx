@@ -32,21 +32,19 @@ import CustomerRow from "./CustomerRow";
 import { State, customerActionCreators, CustomerTypes } from "../../../state";
 import { bindActionCreators } from "redux";
 import { useDispatch, useSelector } from "react-redux";
+// import "./modalCreate.scss";
+import "./modalCreate.css";
 
 const CreateCustomerModal = ({
   setCurrentPage,
   setIsascending,
-  setSortBy,
   nbCustomersPerPage,
   nbCustomer,
-  handleScroll,
 }: {
   setCurrentPage: (page: number) => void;
   setIsascending: (isAscending: boolean) => void;
-  setSortBy: (sortBy: string) => void;
   nbCustomersPerPage: number;
   nbCustomer: number;
-  handleScroll: () => void;
 }) => {
   const [modalShow, setModalShow] = useState(false);
   const hasError = useSelector((state: State) => state.customer.hasError);
@@ -66,7 +64,6 @@ const CreateCustomerModal = ({
         siret: "",
         tel: "",
         email: "",
-        password: "",
         address: "",
         cp: "",
         solde_init: 0,
@@ -91,7 +88,6 @@ const CreateCustomerModal = ({
                 siret: "",
                 tel: "",
                 email: "",
-                password: "",
                 address: "",
                 cp: "",
                 solde_init: 0,
@@ -107,9 +103,9 @@ const CreateCustomerModal = ({
 
       <Modal
         show={modalShow}
-        size="xl"
-        aria-labelledby="contained-modal-title-vcenter"
         centered
+        aria-labelledby="contained-modal-title-vcenter"
+        dialogClassName="modal-90w "
       >
         <Modal.Header className="bg-primary text-white">
           <Modal.Title id="contained-modal-title-vcenter ">
@@ -125,7 +121,6 @@ const CreateCustomerModal = ({
                   ["Siret", "siret"],
                   ["Téléphone", "tel"],
                   ["Email", "email"],
-                  ["Mot de passe", "password"],
                   ["Address", "address"],
                   ["Code postal", "cp"],
                   ["Solde", "solde_init"],
@@ -142,6 +137,15 @@ const CreateCustomerModal = ({
                 noId={true}
                 type="create"
                 newCustomerState={[newCustomer, setnewCustomer]}
+                tdOrder={[
+                  "name",
+                  "siret",
+                  "tel",
+                  "email",
+                  "address",
+                  "cp",
+                  "solde_init",
+                ]}
               />
             </tbody>
           </Table>
@@ -156,8 +160,6 @@ const CreateCustomerModal = ({
               );
               setCurrentPage(Math.ceil(nbCustomer / nbCustomersPerPage));
               setIsascending(true);
-              setSortBy("id");
-              // handleScroll();
             }}
           >
             confirmer
@@ -165,7 +167,7 @@ const CreateCustomerModal = ({
           <Button
             variant="warning"
             onClick={(e) => {
-              // setModalShow(false);
+              setModalShow(false);
               setNoError();
             }}
           >
