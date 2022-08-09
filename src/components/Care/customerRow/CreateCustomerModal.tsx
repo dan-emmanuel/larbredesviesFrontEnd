@@ -36,18 +36,16 @@ import { useDispatch, useSelector } from "react-redux";
 import "./modalCreate.css";
 
 const CreateCustomerModal = ({
-  setCurrentPage,
-  setIsascending,
-  nbCustomersPerPage,
-  nbCustomer,
+  currentPage,
+  isascending,
+  sortBy,
 }: {
-  setCurrentPage: (page: number) => void;
-  setIsascending: (isAscending: boolean) => void;
-  nbCustomersPerPage: number;
-  nbCustomer: number;
+  currentPage: (page: number) => void;
+  isascending: (isac: "ASC" | "DESC") => void;
+  sortBy: (key: keyof CustomerTypes.Customer) => void;
 }) => {
   const [modalShow, setModalShow] = useState(false);
-  const hasError = useSelector((state: State) => state.customer.hasError);
+  const { hasError, customers } = useSelector((state: State) => state.customer);
 
   const dispatch = useDispatch();
   const { addcustomer, setNoError } = bindActionCreators(
@@ -71,10 +69,14 @@ const CreateCustomerModal = ({
     )
   );
   useEffect(() => {
-    if (hasError === false) {
+    if (hasError === false && modalShow === true) {
+      currentPage(1);
+      isascending("DESC");
+      sortBy("id");
       setModalShow(false);
     }
-  }, [hasError]);
+    // eslint-disable-next-line
+  }, [hasError, customers]);
   return (
     <>
       <Button
@@ -158,8 +160,6 @@ const CreateCustomerModal = ({
               addcustomer(
                 newCustomer as Omit<CustomerTypes.Customer, "id" | "solde_init">
               );
-              setCurrentPage(Math.ceil(nbCustomer / nbCustomersPerPage));
-              setIsascending(true);
             }}
           >
             confirmer

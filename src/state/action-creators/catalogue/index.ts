@@ -31,8 +31,8 @@ export const filterProducts = (e: string) => {
         type: ActionType.FILTERPROD,
         payload: e,
       });
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -52,16 +52,7 @@ export const createProduct = (
   e: Omit<CatalogTypes.Product, "id" | "commandNumber">
 ) => {
   try {
-    console.log(process.env);
-
     return async (dispatch: Dispatch<Action>) => {
-      // const newPrd = await axios({
-      //   method: "post",
-      //   url: `${process.env.REACT_APP_API_URL}api/products`,
-      //   data: e,
-      // });
-      // console.log(newPrd);
-
       return dispatch({
         type: ActionType.CREATEPRODUCT,
         payload: e,

@@ -63,7 +63,7 @@ const CareMain = () => {
   );
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [isascending, setIsascending] = useState(true);
+  const [isascending, setIsascending] = useState<"ASC" | "DESC">("ASC");
   const [sortBy, setSortBy] = useState<keyof CustomerTypes.Customer>("id");
 
   const dispatch = useDispatch();
@@ -79,15 +79,16 @@ const CareMain = () => {
   const fetchCustomers = () => {
     getcustomers({
       sortBy,
-      isAsc: isascending ? "ASC" : "DESC",
+      isAsc: isascending,
       perPage: nbCustomersPerPage,
       page: currentPage,
     });
   };
+
   useEffect(() => {
     fetchCustomers();
     // eslint-disable-next-line
-  }, [currentPage, isascending, nbCustomersPerPage, sortBy]);
+  }, [currentPage, isascending, sortBy]);
 
   return (
     <>
@@ -99,10 +100,9 @@ const CareMain = () => {
 
           <Col xs="auto">
             <CreateCustomerModal
-              setCurrentPage={setCurrentPage}
-              setIsascending={setIsascending}
-              nbCustomersPerPage={nbCustomersPerPage}
-              nbCustomer={nbCustomer}
+              currentPage={setCurrentPage}
+              isascending={setIsascending}
+              sortBy={setSortBy}
             />
           </Col>
         </Row>
@@ -119,7 +119,6 @@ const CareMain = () => {
                   onClick={() => {
                     setnbCustomersPerPage(nb);
                     setCurrentPage(1);
-                    fetchCustomers();
                   }}
                 >
                   {nb}
@@ -132,11 +131,19 @@ const CareMain = () => {
               type="text"
               placeholder="Search"
               onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
-                filterCustomers(event?.target?.value);
+                event?.target?.value === ""
+                  ? fetchCustomers()
+                  : filterCustomers({
+                      text: event.target.value as string,
+                      page: 1,
+                      perPage: nbCustomersPerPage,
+                      sortBy,
+                      isAsc: isascending,
+                    });
               }}
             />
             <span className="text-black-50">
-              {`${customers.length} résultats trouvés`}
+              {`${nbCustomer} résultats trouvés`}
             </span>
           </Col>
           <PageSelector
@@ -155,28 +162,30 @@ const CareMain = () => {
                 ["Siret", "siret", "5%"],
                 ["Téléphone", "tel", "10%"],
                 ["Email", "email", "10%"],
-                ["Mot de passe", "password", "10%"],
                 ["Address", "address", "10%"],
                 ["Code postal", "cp", "9%"],
                 ["Solde", "solde_init", "9%"],
-              ].map((key) => {
+              ].map(([text, key]) => {
                 return (
                   <th
-                    key={key[1]}
+                    key={key}
                     onClick={() => {
-                      setIsascending(sortBy === key[1] ? !isascending : true);
-                      setSortBy(key[1] as keyof CustomerTypes.Customer);
+                      setIsascending(
+                        sortBy === key && isascending === "ASC" ? "DESC" : "ASC"
+                      );
+
+                      setSortBy(key as keyof CustomerTypes.Customer);
                       setCurrentPage(1);
                     }}
                   >
                     <Row className="justify-content-center">
                       <Col className="px-1" xs="auto">
-                        {key[0]}
+                        {text}
                       </Col>
                       <div className="d-flex flex-column col-auto px-1">
                         <FontAwesomeIcon
                           color={
-                            sortBy !== key[1] || isascending === false
+                            sortBy !== key || isascending === "DESC"
                               ? "#6c757d"
                               : "black"
                           }
@@ -185,7 +194,7 @@ const CareMain = () => {
 
                         <FontAwesomeIcon
                           color={
-                            sortBy !== key[1] || isascending === true
+                            sortBy !== key || isascending === "ASC"
                               ? "#6c757d"
                               : "black"
                           }
@@ -211,7 +220,6 @@ const CareMain = () => {
                       "siret",
                       "tel",
                       "email",
-                      "password",
                       "address",
                       "cp",
                       "solde_init",

@@ -8,7 +8,6 @@
 import { ActionType } from "../../action-types/customer";
 import { CustomerState } from "./customerTypes";
 import { Action } from "../../actions/customer";
-import { CustomerSclass } from "./customerTypes";
 
 const initState: CustomerState = {
   // customers: [
@@ -5514,8 +5513,7 @@ export const customerReducer = (
 ): CustomerState => {
   switch (action.type) {
     case ActionType.ADDCUSTOMER:
-      console.log(action.payload);
-      return action.payload instanceof CustomerSclass
+      return typeof action.payload !== "string"
         ? {
             ...state,
             customers: [
@@ -5527,7 +5525,6 @@ export const customerReducer = (
             hasError: false,
           }
         : { ...state, hasError: action.payload as string };
-
     case ActionType.DELETECUSTOMER:
       return {
         ...state,
@@ -5536,22 +5533,23 @@ export const customerReducer = (
         ),
       };
     case ActionType.UPDATECUSTOMER:
-      return {
-        ...state,
-        customers: state.customers.map((customer) =>
-          customer.id === action.payload.id
-            ? { ...customer, ...action.payload }
-            : customer
-        ),
-      };
+      return typeof action.payload !== "string"
+        ? {
+            ...state,
+            customers: state.customers.map((customer) =>
+              customer.id === action.payload.id
+                ? { ...customer, ...action.payload }
+                : customer
+            ),
+            hasError: false,
+          }
+        : { ...state, hasError: action.payload as string };
     case ActionType.GETCUSTOMER:
       return {
         ...state,
         selectedCustomerId: action.payload,
       };
     case ActionType.GETCUSTOMERS:
-      console.log(action.payload);
-
       return action.payload.data.length > 0
         ? {
             ...state,
@@ -5563,22 +5561,12 @@ export const customerReducer = (
             customers: [],
             total: 0,
           };
-    case ActionType.FILTERCUSTOMERS:
-      return {
-        ...state,
-        customers: initState.customers.filter((customer) =>
-          Object.values(customer).some((value) =>
-            value.toString().includes(action.payload)
-          )
-        ),
-      };
 
     case ActionType.SETNOERROR:
       return {
         ...state,
         hasError: false,
       };
-
     default:
       return { ...state };
   }

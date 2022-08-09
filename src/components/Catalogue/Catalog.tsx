@@ -28,7 +28,7 @@ import React from "react";
 // store
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import { catalogueActionCreators, State } from "../../state";
+import { catalogueActionCreators, State, CatalogTypes } from "../../state";
 
 //components
 import { Col, Container, Form, Row } from "react-bootstrap";
@@ -67,12 +67,14 @@ const Catalogue = () => {
             </span>
           </Col>
           <Col md={"auto"} className="mb-3 align ms-auto">
-            <ProductModal
-              btnVariant="primary"
-              btncontent="Ajouter un produit"
-              btnLogo={faPlus}
-              type="create"
-            />
+            {products.length > 0 && (
+              <ProductModal
+                btnVariant="primary"
+                btncontent="Ajouter un produit"
+                btnLogo={faPlus}
+                type="create"
+              />
+            )}
           </Col>
         </Row>
         <Row>
@@ -82,13 +84,16 @@ const Catalogue = () => {
           </Col>
           <Col sm={10}>
             <Row id="prodRow">
-              {products.length ? (
-                products.map((product, prodKey: number) => (
-                  <ProductCard key={prodKey} {...product} />
-                ))
-              ) : (
-                <h1>No products found</h1>
-              )}
+              {products.length
+                ? products.map((product, prodKey: number) => (
+                    <ProductCard key={prodKey} {...product} />
+                  ))
+                : [
+                    ...Array(20).map(
+                      (key) =>
+                        new CatalogTypes.ProductClass(NaN, "", "", NaN, "", NaN)
+                    ),
+                  ].map((_, key) => <ProductCard key={key} {..._} />)}
             </Row>
           </Col>
         </Row>

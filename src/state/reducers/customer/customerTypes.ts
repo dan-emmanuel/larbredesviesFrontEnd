@@ -10,13 +10,14 @@ export type Customer = {
   name: string;
   siret: string;
   tel: string;
-  email: string;
-  password: string;
+  email: string | null;
+  password: string | null;
   address: string;
   cp: string;
   solde_init: number;
-  crdate_creation?: string;
-  last_update?: string;
+  crdate_creation?: string | null;
+  last_update?: string | null;
+  contact?: string | null;
 };
 export class CustomerSclass {
   constructor(
@@ -24,13 +25,14 @@ export class CustomerSclass {
     public name: string,
     public siret: string,
     public tel: string,
-    public email: string,
-    public password: string,
+    public email: string | null,
+    public password: string | null,
     public address: string,
     public cp: string,
     public solde_init: number,
-    public crdate_creation?: string,
-    public last_update?: string
+    public crdate_creation?: string | null,
+    public last_update?: string | null,
+    public contact?: string | null
   ) {}
 }
 

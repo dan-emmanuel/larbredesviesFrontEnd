@@ -47,17 +47,24 @@ const PageSelector = ({
       <Pagination className="col-auto">
         <Pagination.First
           disabled={disableFirst}
-          onClick={() => setCurrentPage(1)}
+          onClick={() => {
+            setCurrentPage(1);
+          }}
         />
         <Pagination.Prev
           className={!showpaginnationPrev ? "d-none" : ""}
-          onClick={() => setCurrentPage(currentPage - 1)}
+          onClick={() => {
+            setCurrentPage(currentPage - 1);
+          }}
         />
         {setPages().map((page) => (
           <Pagination.Item
             key={page}
             active={page === currentPage}
-            onClick={() => setCurrentPage(page)}
+            onClick={() => {
+              console.log(page);
+              setCurrentPage(page);
+            }}
           >
             {page}
           </Pagination.Item>
@@ -69,7 +76,9 @@ const PageSelector = ({
         />
         <Pagination.Last
           disabled={disableLast}
-          onClick={() => setCurrentPage(nbPage)}
+          onClick={() => {
+            setCurrentPage(nbPage);
+          }}
         />
       </Pagination>
     </>

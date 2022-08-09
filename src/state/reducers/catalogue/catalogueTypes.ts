@@ -24,3 +24,18 @@ export type CatalogueState = {
   categories: Category[];
   checkedCat: string;
 };
+
+export class ProductClass {
+  constructor(
+    public id: number,
+    public productName: string,
+    public category: string,
+    public price: number,
+    public reference: string,
+    public commandNumber: number
+  ) {}
+}
+
+export class CategoryClass {
+  constructor(public id: number, public name: string) {}
+}

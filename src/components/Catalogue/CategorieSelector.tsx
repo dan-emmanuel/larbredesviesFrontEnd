@@ -21,9 +21,9 @@ import React, { useRef, useState } from "react";
 // store
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import { catalogueActionCreators, State } from "../../state";
+import { catalogueActionCreators, State, CatalogTypes } from "../../state";
 //components
-import { Button, Form, ListGroup, Row } from "react-bootstrap";
+import { Button, Form, ListGroup, Row, Placeholder } from "react-bootstrap";
 
 // styles & assets
 import "./prodRow.scss";
@@ -52,61 +52,77 @@ const CategorieSelector = () => {
     <ListGroup as="ul">
       {
         // loop through categories and add a master category to check all
-        [{ id: "all", name: "toutes" }, ...categories].map(
-          (category, idcat: number) => (
-            // add a checkbox for each category
-            <ListGroup.Item
-              action
-              as="li"
-              key={idcat}
-              active={category.name === checkedCat}
-              value={category.name}
-              onClick={() => setCheckedCategory(category.name)}
-            >
-              {category.name}
-            </ListGroup.Item>
-          )
-        )
+        categories.length > 0
+          ? [{ id: "all", name: "toutes" }, ...categories].map(
+              (category, idcat: number) => (
+                // add a checkbox for each category
+                <ListGroup.Item
+                  action
+                  as="li"
+                  key={idcat}
+                  active={category.name === checkedCat}
+                  value={category.name}
+                  onClick={() => setCheckedCategory(category.name)}
+                >
+                  {category.name}
+                </ListGroup.Item>
+              )
+            )
+          : [
+              ...Array(3).map(
+                (_, id) => new CatalogTypes.CategoryClass(NaN, ``)
+              ),
+            ].map((_, id) => (
+              <Placeholder
+                as="li"
+                className="list-group-item list-group-item-action"
+                animation="glow"
+              >
+                <Placeholder as="p" xs={12} className="h-100 m-0" />
+              </Placeholder>
+            ))
       }
-      <ListGroup.Item action as="li" className="text-center">
-        {showPlus ? (
-          <Row
-            className={`justify-content-center ${showPlus ? "px-0" : ""}`}
-            onClick={() => setShowPlus(!showPlus)}
-          >
-            <FontAwesomeIcon icon={faPlus} />
-          </Row>
-        ) : (
-          <>
-            <Row>
-              <Form.Control
-                name="category"
-                type="text"
-                placeholder="Nom du produit"
-                onInput={(e) =>
-                  setNewCategory((e.target as HTMLInputElement).value)
-                }
-                ref={category}
-              />
+      {categories.length > 0 && (
+        <ListGroup.Item action as="li" className="text-center">
+          {showPlus ? (
+            <Row
+              className={`justify-content-center ${showPlus ? "px-0" : ""}`}
+              onClick={() => setShowPlus(!showPlus)}
+            >
+              <FontAwesomeIcon icon={faPlus} />
             </Row>
-            <Row className="justify-content-between mt-1">
-              <Button
-                className="col-auto"
-                onClick={() => createCategoryEventCback()}
-              >
-                Ajouter
-              </Button>
-              <Button
-                className="col-auto"
-                variant="danger"
-                onClick={() => setShowPlus(!showPlus)}
-              >
-                Annuler
-              </Button>
-            </Row>
-          </>
-        )}
-      </ListGroup.Item>
+          ) : (
+            <>
+              <Row>
+                <Form.Control
+                  name="category"
+                  type="text"
+                  placeholder="Nom du produit"
+                  onInput={(e) =>
+                    setNewCategory((e.target as HTMLInputElement).value)
+                  }
+                  ref={category}
+                />
+              </Row>
+              <Row className="justify-content-between mt-1">
+                <Button
+                  className="col-auto"
+                  onClick={() => createCategoryEventCback()}
+                >
+                  Ajouter
+                </Button>
+                <Button
+                  className="col-auto"
+                  variant="danger"
+                  onClick={() => setShowPlus(!showPlus)}
+                >
+                  Annuler
+                </Button>
+              </Row>
+            </>
+          )}
+        </ListGroup.Item>
+      )}
     </ListGroup>
   );
 };

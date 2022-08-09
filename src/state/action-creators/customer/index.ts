@@ -24,10 +24,49 @@ import { ActionType } from "../../action-types/customer";
 import { CustomerTypes } from "../..";
 import axios from "axios";
 
-export const filterCustomers = (text: string) => ({
-  type: ActionType.FILTERCUSTOMERS,
-  payload: text,
-});
+export const filterCustomers = ({
+  text,
+  page,
+  perPage,
+  sortBy,
+  isAsc,
+}: {
+  text: string;
+  page: number;
+  perPage: number;
+  sortBy: string;
+  isAsc: "ASC" | "DESC";
+}) => {
+  return async (dispatch: Dispatch<Action>) => {
+    dispatch({
+      type: ActionType.GETCUSTOMERS,
+      payload: {
+        data: [],
+        total: 0,
+      },
+    });
+    const customers = await axios({
+      method: "post",
+      url: `${process.env.REACT_APP_API_URL}customer/search`,
+      data: {
+        queryString: text,
+        queryFilters: {
+          page,
+          perPage,
+          isAsc,
+          sortBy,
+        },
+      },
+    });
+    console.log(customers);
+
+    dispatch({
+      type: ActionType.GETCUSTOMERS,
+      payload: customers.data.records,
+    });
+  };
+};
+
 export const addcustomer = (
   e: Omit<CustomerTypes.Customer, "id" | "solde_init">
 ) => {
@@ -38,17 +77,22 @@ export const addcustomer = (
         url: `${process.env.REACT_APP_API_URL}customer`,
         data: e,
       });
-      console.log(newClient);
-
-      return newClient?.data?.records?.error
+      newClient?.data?.error
         ? dispatch({
             type: ActionType.ADDCUSTOMER,
-            payload: newClient?.data?.records?.error,
+            payload: newClient?.data?.error,
           })
         : dispatch({
             type: ActionType.ADDCUSTOMER,
             payload: newClient.data.records,
           });
+      !newClient?.data?.error &&
+        getcustomers({
+          sortBy: "id",
+          isAsc: "DESC",
+          page: 1,
+          perPage: 10,
+        });
     };
   } catch (e) {
     console.log(e);
@@ -72,9 +116,7 @@ export const deletecustomer = (id: CustomerTypes.Customer["id"]) => {
     console.log(e);
   }
 };
-export const updatecustomer = (
-  e: Omit<CustomerTypes.Customer, "id" | "solde_init">
-) => {
+export const updatecustomer = (e: Partial<CustomerTypes.Customer>) => {
   try {
     return async (dispatch: Dispatch<Action>) => {
       const response = await axios({
@@ -82,13 +124,17 @@ export const updatecustomer = (
         url: `${process.env.REACT_APP_API_URL}customer`,
         data: e,
       });
-      console.log(!response?.data?.records?.response?.error);
-      if (!response?.data?.records?.response?.error) {
-        dispatch({
-          type: ActionType.UPDATECUSTOMER,
-          payload: response?.data?.records?.response,
-        });
-      }
+      console.log(response.data.error);
+
+      response?.data?.error
+        ? dispatch({
+            type: ActionType.UPDATECUSTOMER,
+            payload: response?.data?.error,
+          })
+        : dispatch({
+            type: ActionType.UPDATECUSTOMER,
+            payload: response?.data?.records,
+          });
     };
   } catch (e) {
     console.log(e);

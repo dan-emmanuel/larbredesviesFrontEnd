@@ -27,9 +27,9 @@
 //components
 import React, { useEffect, useState } from "react";
 // store
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import { CustomerTypes, customerActionCreators } from "../../../state";
+import { CustomerTypes, customerActionCreators, State } from "../../../state";
 import { Button, Row, Placeholder } from "react-bootstrap";
 import DeleteCustomerModal from "./DeleteCustomerModal";
 //style & assets
@@ -61,25 +61,31 @@ const CustomerRow = ({
   const [newCustomer, setNewCustomer] = useState(Object.assign({}, customer));
 
   const dispatch = useDispatch();
+  const { hasError, customers } = useSelector((state: State) => state.customer);
+
   const { addcustomer, updatecustomer } = bindActionCreators(
     customerActionCreators,
     dispatch
   );
   const handleSubmit = () => {
-    setIsEditing(false);
     if (type === "create") {
       addcustomer(
         newCustomer as Omit<CustomerTypes.Customer, "id" | "solde_init">
       );
     }
     if (type === "edit") {
-      updatecustomer(newCustomer as CustomerTypes.Customer);
+      delete newCustomer.password;
+      updatecustomer(newCustomer as Partial<CustomerTypes.Customer>);
     }
   };
-
   useEffect(() => {
+    if (hasError === false && isEditing === true && type === "edit") {
+      setIsEditing(false);
+    }
+
     setNewCustomer(Object.assign({}, customer));
-  }, [customer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasError, customers]);
   return (
     <>
       <tr key={customer.id}>
@@ -133,8 +139,6 @@ const CustomerRow = ({
                 variant="outline-warning"
                 className={`col-auto ${isEditing ? "d-none" : ""}`}
                 onClick={() => {
-                  console.log(newCustomer);
-
                   setIsEditing(!isEditing);
                 }}
               >
@@ -163,6 +167,16 @@ const CustomerRow = ({
           </td>
         )}
       </tr>
+      {hasError && isEditing && type === "edit" && (
+        <tr>
+          <td
+            className="text-danger text-center"
+            colSpan={tdOrder.length + Number(!noId) + Number(whithAction)}
+          >
+            {hasError}
+          </td>
+        </tr>
+      )}
     </>
   );
 };
