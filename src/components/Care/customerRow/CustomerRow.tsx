@@ -31,7 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { CustomerTypes, customerActionCreators, State } from "../../../state";
 import { Button, Row, Placeholder } from "react-bootstrap";
-import DeleteCustomerModal from "./DeleteCustomerModal";
+import DeleteCustomerModal from "../DeleteCustomerModal";
 //style & assets
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faBan, faCheck } from "@fortawesome/free-solid-svg-icons";

@@ -41,7 +41,7 @@ import {
 } from "react-bootstrap";
 import CustomerRow from "./customerRow/CustomerRow";
 import PageSelector from "./PageSelector";
-import CreateCustomerModal from "./customerRow/CreateCustomerModal";
+import CreateCustomerModal from "./CreateCustomerModal";
 // store
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";

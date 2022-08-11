@@ -29,10 +29,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { Button, Modal, Table } from "react-bootstrap";
-import CustomerRow from "./CustomerRow";
+import CustomerRow from "./customerRow/CustomerRow";
 
 //store
-import { CustomerTypes, customerActionCreators } from "../../../state";
+import { CustomerTypes, customerActionCreators } from "../../state";
 import { bindActionCreators } from "redux";
 import { useDispatch } from "react-redux";
 

@@ -36,7 +36,7 @@ const CategorieSelector = () => {
     catalogueActionCreators,
     dispatch
   );
-  const { categories, checkedCat } = useSelector(
+  const { categories, checkedCat, products } = useSelector(
     (state: State) => state.catalogue
   );
   const [newCategory, setNewCategory] = useState("");
@@ -53,27 +53,29 @@ const CategorieSelector = () => {
       {
         // loop through categories and add a master category to check all
         categories.length > 0
-          ? [{ id: "all", name: "toutes" }, ...categories].map(
-              (category, idcat: number) => (
-                // add a checkbox for each category
-                <ListGroup.Item
-                  action
-                  as="li"
-                  key={idcat}
-                  active={category.name === checkedCat}
-                  value={category.name}
-                  onClick={() => setCheckedCategory(category.name)}
-                >
-                  {category.name}
-                </ListGroup.Item>
-              )
-            )
+          ? [
+              new CatalogTypes.CategoryClass(products.length, "Toutes", "all"),
+              ...categories,
+            ].map((category, idcat: number) => (
+              // add a checkbox for each category
+              <ListGroup.Item
+                action
+                as="li"
+                key={idcat}
+                active={category.id === checkedCat}
+                value={category.name}
+                onClick={() => setCheckedCategory(category.id)}
+              >
+                {category.name} ({category.count})
+              </ListGroup.Item>
+            ))
           : [
               ...Array(3).map(
-                (_, id) => new CatalogTypes.CategoryClass(NaN, ``)
+                (_, id) => new CatalogTypes.CategoryClass(NaN, ``, NaN)
               ),
             ].map((_, id) => (
               <Placeholder
+                key={id}
                 as="li"
                 className="list-group-item list-group-item-action"
                 animation="glow"

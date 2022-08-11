@@ -16,12 +16,12 @@ interface FilterProdAction {
 
 interface SetCheckedCatAction {
   type: ActionType.SETCHECKEDCAT;
-  payload: string;
+  payload: number | "all";
 }
 
 interface CreateProductAction {
   type: ActionType.CREATEPRODUCT;
-  payload: Omit<CatalogTypes.Product, "id" | "commandNumber">;
+  payload: Omit<CatalogTypes.Product, "id" | "commandNumber"> | string;
 }
 
 interface DeleteProductAction {
@@ -37,11 +37,24 @@ interface CreateCategory {
   type: ActionType.CREATECATEGORY;
   payload: string;
 }
-
+interface GetProducts {
+  type: ActionType.GETPRODUCTS;
+  payload: CatalogTypes.Product[];
+}
+interface GetCategories {
+  type: ActionType.GETCATEGORIES;
+  payload: CatalogTypes.Category[];
+}
+interface SetHasNoError {
+  type: ActionType.SETHASNOERROR;
+}
 export type Action =
   | FilterProdAction
   | SetCheckedCatAction
   | CreateProductAction
   | DeleteProductAction
   | UpdateProductAction
-  | CreateCategory;
+  | CreateCategory
+  | GetProducts
+  | GetCategories
+  | SetHasNoError;

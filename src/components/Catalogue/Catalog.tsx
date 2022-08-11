@@ -24,7 +24,7 @@
 
 */
 
-import React from "react";
+import React, { useEffect } from "react";
 // store
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -43,12 +43,16 @@ import "./prodRow.scss";
 const Catalogue = () => {
   const dispatch = useDispatch();
 
-  const { filterProducts } = bindActionCreators(
+  const { filterProducts, getCategories, getProducts } = bindActionCreators(
     catalogueActionCreators,
     dispatch
   );
   const products = useSelector((state: State) => state.catalogue.products);
-
+  useEffect(() => {
+    getCategories();
+    getProducts();
+    // eslint-disable-next-line
+  }, []);
   return (
     <>
       <Container fluid className="mt-3">
@@ -91,7 +95,14 @@ const Catalogue = () => {
                 : [
                     ...Array(20).map(
                       (key) =>
-                        new CatalogTypes.ProductClass(NaN, "", "", NaN, "", NaN)
+                        new CatalogTypes.ProductClass(
+                          NaN,
+                          "",
+                          NaN,
+                          NaN,
+                          "",
+                          NaN
+                        )
                     ),
                   ].map((_, key) => <ProductCard key={key} {..._} />)}
             </Row>

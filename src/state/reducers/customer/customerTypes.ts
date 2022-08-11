@@ -39,6 +39,6 @@ export class CustomerSclass {
 export type CustomerState = {
   customers: Customer[] | [];
   selectedCustomerId: number | null;
-  hasError: boolean | string;
+  hasError: false | string;
   total: number;
 };

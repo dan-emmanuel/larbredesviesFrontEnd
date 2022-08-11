@@ -6,14 +6,15 @@
 */
 
 export type Category = {
-  id: number;
+  id: number | "all";
+  count: number;
   name: string;
 };
 
 export type Product = {
   id: number;
-  productName: string;
-  category: string;
+  name: string;
+  category: number;
   price: number;
   reference: string;
   commandNumber: number;
@@ -21,15 +22,16 @@ export type Product = {
 
 export type CatalogueState = {
   products: Product[];
-  categories: Category[];
-  checkedCat: string;
+  categories: (Category | CategoryClass)[];
+  checkedCat: number | "all";
+  hasError: false | string;
 };
 
 export class ProductClass {
   constructor(
     public id: number,
-    public productName: string,
-    public category: string,
+    public name: string,
+    public category: number,
     public price: number,
     public reference: string,
     public commandNumber: number
@@ -37,5 +39,9 @@ export class ProductClass {
 }
 
 export class CategoryClass {
-  constructor(public id: number, public name: string) {}
+  constructor(
+    public count: number,
+    public name: string,
+    public id: number | "all"
+  ) {}
 }

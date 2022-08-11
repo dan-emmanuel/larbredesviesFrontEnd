@@ -26,10 +26,10 @@
 //components
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Table } from "react-bootstrap";
-import CustomerRow from "./CustomerRow";
+import CustomerRow from "./customerRow/CustomerRow";
 
 //store
-import { State, customerActionCreators, CustomerTypes } from "../../../state";
+import { State, customerActionCreators, CustomerTypes } from "../../state";
 import { bindActionCreators } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 // import "./modalCreate.scss";

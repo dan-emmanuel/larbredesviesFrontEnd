@@ -21,7 +21,7 @@ import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Col, Placeholder } from "react-bootstrap";
 
 const ProductCard = ({
-  productName,
+  name,
   category,
   price,
   reference,
@@ -91,7 +91,7 @@ const ProductCard = ({
             </>
           ) : (
             <>
-              <Card.Title>{productName}</Card.Title>
+              <Card.Title>{name}</Card.Title>
               <Card.Subtitle className="mb-2 mt-0">{category}</Card.Subtitle>
               <Card.Text>{price} €</Card.Text>
             </>

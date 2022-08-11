@@ -64,7 +64,7 @@ const ProductForm = (props: FormProps) => {
   const createProductToSend = (
     form: EventTarget & HTMLFormElement
   ): Omit<CatalogTypes.Product, "id" | "commandNumber"> => ({
-    productName: form.productName.value,
+    name: form.productName.value,
     category: form.category.value,
     price: form.price.value,
     reference: form.reference.value,
@@ -93,8 +93,6 @@ const ProductForm = (props: FormProps) => {
         default:
           break;
       }
-
-      props?.modalCloser?.();
     }
     setValidated(true);
   };
@@ -122,10 +120,9 @@ const ProductForm = (props: FormProps) => {
                 readOnly={props.type === "delete"}
                 disabled={props.type === "delete"}
                 name="productName"
-                required
                 type="text"
                 placeholder="Nom du produit"
-                defaultValue={product?.productName ?? ""}
+                defaultValue={product?.name ?? ""}
               />
               <Form.Control.Feedback type="invalid">
                 champ obligatoire
@@ -163,12 +160,15 @@ const ProductForm = (props: FormProps) => {
                     name="category"
                     required
                     as="select"
-                    defaultValue={product?.productName}
+                    defaultValue={product?.name}
                     onChange={newCatChecked}
                   >
                     {[...categories].map(
-                      ({ id, name }: CatalogTypes.Category, idcat: number) => (
-                        <option key={idcat} defaultValue={name}>
+                      (
+                        { count, name, id }: CatalogTypes.Category,
+                        idcat: number
+                      ) => (
+                        <option key={idcat} value={id}>
                           {name}
                         </option>
                       )

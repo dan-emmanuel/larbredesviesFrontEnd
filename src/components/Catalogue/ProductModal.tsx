@@ -22,17 +22,20 @@
     
 */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // store
-import { useSelector } from "react-redux";
-import { State, CatalogTypes } from "../../state";
+import { useDispatch, useSelector } from "react-redux";
+import { State, CatalogTypes, catalogueActionCreators } from "../../state";
 //components
-import "./prodRow.scss";
 import { Button, Modal } from "react-bootstrap";
 import ProductForm from "./productForm/ProductForm";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { bindActionCreators } from "redux";
+
+//style
+import "./prodRow.scss";
 
 interface FormCreateProdPropsWithId {
   btnVariant: string;
@@ -59,17 +62,23 @@ type productModalProps =
 const ProductModal = (props: productModalProps) => {
   const [show, setShow] = useState(false);
 
-  // const dispatch = useDispatch();
-  // const {} = bindActionCreators(catalogueActionCreators, dispatch);
+  const dispatch = useDispatch();
+  const { setHasNoError } = bindActionCreators(
+    catalogueActionCreators,
+    dispatch
+  );
 
-  const { products } = useSelector((state: State) => state.catalogue);
+  const { products, hasError } = useSelector((state: State) => state.catalogue);
   const [product, setProduit] = useState(
     products.find(
       (product: CatalogTypes.Product) => product.id === props.prodId
     )
   );
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setHasNoError();
+  };
   const handleShow = () => {
     setProduit(
       products.find(
@@ -78,7 +87,10 @@ const ProductModal = (props: productModalProps) => {
     );
     setShow(true);
   };
-
+  useEffect(() => {
+    show && hasError && setShow(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products.length]);
   return (
     <>
       <Button
@@ -100,9 +112,7 @@ const ProductModal = (props: productModalProps) => {
           <Modal.Title>
             {`Produit
             ${
-              product
-                ? `Modification du produit ${product.productName}`
-                : "Création"
+              product ? `Modification du produit ${product.name}` : "Création"
             }`}
           </Modal.Title>
         </Modal.Header>
@@ -115,6 +125,7 @@ const ProductModal = (props: productModalProps) => {
           />
         </Modal.Body>
         <Modal.Footer>
+          {hasError && <div className="text-danger me-auto">{hasError}</div>}
           <Button variant="secondary" onClick={handleClose}>
             annuler
           </Button>

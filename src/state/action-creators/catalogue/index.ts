@@ -23,7 +23,36 @@ import { Dispatch } from "redux";
 import { Action } from "../../actions/catalogue";
 import { ActionType } from "../../action-types/catalogue";
 import { CatalogTypes } from "../..";
+import axios from "axios";
 //Read Actions
+export const getProducts = () => async (dispatch: Dispatch) => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}catalog/all`
+    );
+
+    dispatch({
+      type: ActionType.GETPRODUCTS,
+      payload: response.data.records.data,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const getCategories = () => async (dispatch: Dispatch) => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}catalog/categories`
+    );
+    dispatch({
+      type: ActionType.GETCATEGORIES,
+      payload: response.data.records,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const filterProducts = (e: string) => {
   try {
     return (dispatch: Dispatch<Action>) =>
@@ -36,7 +65,7 @@ export const filterProducts = (e: string) => {
   }
 };
 
-export const setCheckedCategory = (e: string) => {
+export const setCheckedCategory = (e: number | "all") => {
   try {
     return (dispatch: Dispatch<Action>) =>
       dispatch({
@@ -53,10 +82,22 @@ export const createProduct = (
 ) => {
   try {
     return async (dispatch: Dispatch<Action>) => {
-      return dispatch({
-        type: ActionType.CREATEPRODUCT,
-        payload: e,
+      console.log(e);
+
+      const newProduct = await axios({
+        method: "post",
+        url: `${process.env.REACT_APP_API_URL}catalog/product`,
+        data: e,
       });
+      return newProduct?.data?.error
+        ? dispatch({
+            type: ActionType.CREATEPRODUCT,
+            payload: newProduct?.data?.error,
+          })
+        : dispatch({
+            type: ActionType.CREATEPRODUCT,
+            payload: newProduct.data.records,
+          });
     };
   } catch (error) {
     console.log(error);
@@ -94,6 +135,17 @@ export const createCategory = (e: string) => {
       dispatch({
         type: ActionType.CREATECATEGORY,
         payload: e,
+      });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const setHasNoError = () => {
+  try {
+    return (dispatch: Dispatch<Action>) =>
+      dispatch({
+        type: ActionType.SETHASNOERROR,
       });
   } catch (error) {
     console.log(error);
