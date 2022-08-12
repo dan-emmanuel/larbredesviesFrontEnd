@@ -91,6 +91,23 @@ const ProductModal = (props: productModalProps) => {
     show && hasError && setShow(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products.length]);
+  const titleaffect = () => {
+    switch (props.type) {
+      case "create":
+        return "Créer un produit";
+      case "update":
+        return (
+          "Modification du produit : " + (product as CatalogTypes.Product).name
+        );
+      case "delete":
+        return (
+          "Supprimer le produit : " + (product as CatalogTypes.Product).name
+        );
+      default:
+        return "";
+    }
+  };
+
   return (
     <>
       <Button
@@ -109,12 +126,7 @@ const ProductModal = (props: productModalProps) => {
 
       <Modal centered size="lg" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>
-            {`Produit
-            ${
-              product ? `Modification du produit ${product.name}` : "Création"
-            }`}
-          </Modal.Title>
+          <Modal.Title>{titleaffect()}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ProductForm
@@ -137,11 +149,11 @@ const ProductModal = (props: productModalProps) => {
             {(() => {
               switch (props.type) {
                 case "create":
-                  return "Créer";
+                  return " Créer";
                 case "update":
-                  return "Modifier";
+                  return "Modifier ";
                 default:
-                  return "Supprimer";
+                  return "Supprimer ";
               }
             })()}
             le produit

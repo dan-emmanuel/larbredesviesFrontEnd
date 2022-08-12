@@ -58,7 +58,6 @@ export const filterCustomers = ({
         },
       },
     });
-    console.log(customers);
 
     dispatch({
       type: ActionType.GETCUSTOMERS,

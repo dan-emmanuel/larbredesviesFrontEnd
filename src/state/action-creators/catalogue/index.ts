@@ -106,11 +106,21 @@ export const createProduct = (
 
 export const deleteProduct = (e: CatalogTypes.Product["id"]) => {
   try {
-    return (dispatch: Dispatch<Action>) =>
-      dispatch({
-        type: ActionType.DELETEPRODUCT,
-        payload: e,
+    return async (dispatch: Dispatch<Action>) => {
+      const deleted = await axios({
+        method: "delete",
+        url: `${process.env.REACT_APP_API_URL}catalog/product?id=${e}`,
       });
+      deleted?.data?.records?.affected > 0
+        ? dispatch({
+            type: ActionType.DELETEPRODUCT,
+            payload: e,
+          })
+        : dispatch({
+            type: ActionType.DELETEPRODUCT,
+            payload: "la supression a échoué veuillez reessayer",
+          });
+    };
   } catch (error) {
     console.log(error);
   }

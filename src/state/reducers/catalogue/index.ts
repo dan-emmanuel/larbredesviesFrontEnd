@@ -79,12 +79,18 @@ export const catalogueReducer = (
       stateUpdateurAdd(initState);
       return stateUpdateurAdd(state);
     case ActionType.DELETEPRODUCT:
-      const stateUpdateurRemove = (state: CatalogueState) => ({
-        ...state,
-        products: state.products.filter(
-          (product) => product.id !== action.payload
-        ),
-      });
+      const stateUpdateurRemove = (state: CatalogueState) =>
+        typeof action.payload === "string"
+          ? {
+              ...state,
+              hasError: action.payload,
+            }
+          : {
+              ...state,
+              products: state.products.filter(
+                (product) => product.id !== action.payload
+              ),
+            };
       stateUpdateurRemove(initState);
       return stateUpdateurRemove(state);
     case ActionType.UPDATEPRODUCT:

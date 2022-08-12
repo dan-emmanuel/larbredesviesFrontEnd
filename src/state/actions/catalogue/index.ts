@@ -26,7 +26,7 @@ interface CreateProductAction {
 
 interface DeleteProductAction {
   type: ActionType.DELETEPRODUCT;
-  payload: CatalogTypes.Product["id"];
+  payload: CatalogTypes.Product["id"] | string;
 }
 
 interface UpdateProductAction {
