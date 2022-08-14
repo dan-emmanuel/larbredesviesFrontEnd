@@ -82,8 +82,11 @@ const ProductForm = (props: FormProps) => {
           break;
         case "update":
           updateProduct({
-            ...createProductToSend(form),
-            id: props?.id,
+            product: {
+              ...createProductToSend(form),
+              id: props?.id,
+            },
+            newCategory: showPlus,
           });
           break;
         case "delete":
@@ -123,6 +126,7 @@ const ProductForm = (props: FormProps) => {
                 type="text"
                 placeholder="Nom du produit"
                 defaultValue={product?.name ?? ""}
+                required
               />
               <Form.Control.Feedback type="invalid">
                 champ obligatoire
@@ -163,7 +167,7 @@ const ProductForm = (props: FormProps) => {
                     defaultValue={product?.name}
                     onChange={newCatChecked}
                   >
-                    {[...categories].map(
+                    {[...categories.filter(({ id }) => id !== "all")].map(
                       (
                         { count, name, id }: CatalogTypes.Category,
                         idcat: number

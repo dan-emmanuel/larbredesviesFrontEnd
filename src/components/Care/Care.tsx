@@ -92,7 +92,7 @@ const CareMain = () => {
 
   return (
     <>
-      <Container>
+      <Container fluid className="mt-3">
         <Row className="justify-content-between">
           <Col as="h1" xs="auto">
             Clients

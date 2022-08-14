@@ -16,7 +16,7 @@
 
 */
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // store
 import { useDispatch, useSelector } from "react-redux";
@@ -26,17 +26,17 @@ import { catalogueActionCreators, State, CatalogTypes } from "../../state";
 import { Button, Form, ListGroup, Row, Placeholder } from "react-bootstrap";
 
 // styles & assets
-import "./prodRow.scss";
+import "./prodRow.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-
+import "./categorySelector.css";
 const CategorieSelector = () => {
   const dispatch = useDispatch();
   const { setCheckedCategory, createCategory } = bindActionCreators(
     catalogueActionCreators,
     dispatch
   );
-  const { categories, checkedCat, products } = useSelector(
+  const { categories, checkedCat, hasError } = useSelector(
     (state: State) => state.catalogue
   );
   const [newCategory, setNewCategory] = useState("");
@@ -45,45 +45,16 @@ const CategorieSelector = () => {
   const category = useRef(null);
   const createCategoryEventCback = () => {
     createCategory(newCategory);
-    setShowPlus(!showPlus);
   };
+  useEffect(() => {
+    console.log(showPlus, !hasError);
+
+    !showPlus && !hasError && setShowPlus(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categories.length]);
 
   return (
     <ListGroup as="ul">
-      {
-        // loop through categories and add a master category to check all
-        categories.length > 0
-          ? [
-              new CatalogTypes.CategoryClass(products.length, "Toutes", "all"),
-              ...categories,
-            ].map((category, idcat: number) => (
-              // add a checkbox for each category
-              <ListGroup.Item
-                action
-                as="li"
-                key={idcat}
-                active={category.id === checkedCat}
-                value={category.name}
-                onClick={() => setCheckedCategory(category.id)}
-              >
-                {category.name} ({category.count})
-              </ListGroup.Item>
-            ))
-          : [
-              ...Array(3).map(
-                (_, id) => new CatalogTypes.CategoryClass(NaN, ``, NaN)
-              ),
-            ].map((_, id) => (
-              <Placeholder
-                key={id}
-                as="li"
-                className="list-group-item list-group-item-action"
-                animation="glow"
-              >
-                <Placeholder as="p" xs={12} className="h-100 m-0" />
-              </Placeholder>
-            ))
-      }
       {categories.length > 0 && (
         <ListGroup.Item action as="li" className="text-center">
           {showPlus ? (
@@ -125,6 +96,37 @@ const CategorieSelector = () => {
           )}
         </ListGroup.Item>
       )}
+      {
+        // loop through categories and add a master category to check all
+        categories.length > 0
+          ? categories.map((category, idcat: number) => (
+              // add a checkbox for each category
+              <ListGroup.Item
+                action
+                as="li"
+                key={idcat}
+                active={category.id === checkedCat}
+                value={category.name}
+                onClick={() => setCheckedCategory(category.id)}
+              >
+                {category.name} ({category.count})
+              </ListGroup.Item>
+            ))
+          : [
+              ...Array(3).map(
+                (_, id) => new CatalogTypes.CategoryClass(NaN, ``, NaN)
+              ),
+            ].map((_, id) => (
+              <Placeholder
+                key={id}
+                as="li"
+                className="list-group-item list-group-item-action"
+                animation="glow"
+              >
+                <Placeholder as="p" xs={12} className="h-100 m-0" />
+              </Placeholder>
+            ))
+      }
     </ListGroup>
   );
 };

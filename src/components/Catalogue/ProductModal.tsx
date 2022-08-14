@@ -35,7 +35,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { bindActionCreators } from "redux";
 
 //style
-import "./prodRow.scss";
+import "./prodRow.css";
 
 interface FormCreateProdPropsWithId {
   btnVariant: string;
@@ -88,9 +88,9 @@ const ProductModal = (props: productModalProps) => {
     setShow(true);
   };
   useEffect(() => {
-    show && hasError && setShow(false);
+    show && !hasError && setShow(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [products.length]);
+  }, [products]);
   const titleaffect = () => {
     switch (props.type) {
       case "create":

@@ -8,6 +8,7 @@
 */
 import { CatalogTypes } from "../..";
 import { ActionType } from "../../action-types/catalogue";
+// import { ThunkAction as ReduxThunkAction } from "redux-thunk";
 
 interface FilterProdAction {
   type: ActionType.FILTERPROD;
@@ -21,7 +22,7 @@ interface SetCheckedCatAction {
 
 interface CreateProductAction {
   type: ActionType.CREATEPRODUCT;
-  payload: Omit<CatalogTypes.Product, "id" | "commandNumber"> | string;
+  payload: string;
 }
 
 interface DeleteProductAction {
@@ -58,3 +59,7 @@ export type Action =
   | GetProducts
   | GetCategories
   | SetHasNoError;
+
+// export type GetAfterCreateUpdateDeleteActiontype =
+//   | ReduxThunkAction<void, CatalogTypes.CatalogueState, null, GetProducts>
+//   | ReduxThunkAction<void, CatalogTypes.CatalogueState, null, GetCategories>;

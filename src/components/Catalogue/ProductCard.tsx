@@ -10,7 +10,7 @@
 import React from "react";
 
 //store
-import { CatalogTypes } from "../../state";
+import { CatalogTypes, State } from "../../state";
 
 //Components
 import Card from "react-bootstrap/Card";
@@ -19,6 +19,7 @@ import ProductModal from "./ProductModal";
 //styles & assets
 import { faPen, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Col, Placeholder } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 const ProductCard = ({
   name,
@@ -28,6 +29,7 @@ const ProductCard = ({
   commandNumber,
   id,
 }: CatalogTypes.Product) => {
+  const { categories } = useSelector((state: State) => state.catalogue);
   return (
     <Col xs={12} s={12} md={6} lg={4} xl={3} className=" mb-2">
       <Card>
@@ -92,7 +94,9 @@ const ProductCard = ({
           ) : (
             <>
               <Card.Title>{name}</Card.Title>
-              <Card.Subtitle className="mb-2 mt-0">{category}</Card.Subtitle>
+              <Card.Subtitle className="mb-2 mt-0">
+                {categories.find(({ id }) => id === category)?.name}
+              </Card.Subtitle>
               <Card.Text>{price} €</Card.Text>
             </>
           )}

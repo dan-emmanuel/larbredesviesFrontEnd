@@ -38,7 +38,7 @@ import ProductModal from "./ProductModal";
 
 // styles & assets
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import "./prodRow.scss";
+import "./prodRow.css";
 
 const Catalogue = () => {
   const dispatch = useDispatch();
