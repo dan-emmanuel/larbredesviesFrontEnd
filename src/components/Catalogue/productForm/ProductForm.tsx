@@ -118,13 +118,13 @@ const ProductForm = (props: FormProps) => {
         <Row className="justify-content-around mb-2">
           <Col xs={5}>
             <Form.Group className="" controlId="ProdductName">
-              <Form.Label>Nom du produit</Form.Label>
+              <Form.Label>Nom</Form.Label>
               <Form.Control
                 readOnly={props.type === "delete"}
                 disabled={props.type === "delete"}
                 name="productName"
                 type="text"
-                placeholder="Nom du produit"
+                placeholder="Nom"
                 defaultValue={product?.name ?? ""}
                 required
               />
@@ -142,7 +142,7 @@ const ProductForm = (props: FormProps) => {
                 name="reference"
                 required
                 type="text"
-                placeholder="Référence du produit"
+                placeholder="Référence"
                 defaultValue={product?.reference ?? ""}
               />
               <Form.Control.Feedback type="invalid">
@@ -201,7 +201,7 @@ const ProductForm = (props: FormProps) => {
           </Col>
           <Col xs={5}>
             <Form.Group className="" controlId="ProdductPrice">
-              <Form.Label>Prix du produit</Form.Label>
+              <Form.Label>Prix </Form.Label>
               <InputGroup className="mb-3">
                 <Form.Control
                   readOnly={props.type === "delete"}
@@ -209,7 +209,7 @@ const ProductForm = (props: FormProps) => {
                   name="price"
                   required
                   type="number"
-                  placeholder="Prix du produit"
+                  placeholder="Prix "
                   defaultValue={product?.price ?? 0}
                 />
                 <InputGroup.Text>€</InputGroup.Text>

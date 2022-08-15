@@ -35,7 +35,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { bindActionCreators } from "redux";
 
 //style
-import "./prodRow.css";
+import "./prodRow.module.css";
 
 interface FormCreateProdPropsWithId {
   btnVariant: string;

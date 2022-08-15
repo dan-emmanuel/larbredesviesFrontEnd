@@ -26,10 +26,9 @@ import { catalogueActionCreators, State, CatalogTypes } from "../../state";
 import { Button, Form, ListGroup, Row, Placeholder } from "react-bootstrap";
 
 // styles & assets
-import "./prodRow.css";
+import styles from "./categorySelector.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import "./categorySelector.css";
 const CategorieSelector = () => {
   const dispatch = useDispatch();
   const { setCheckedCategory, createCategory } = bindActionCreators(
@@ -54,7 +53,7 @@ const CategorieSelector = () => {
   }, [categories.length]);
 
   return (
-    <ListGroup as="ul">
+    <ListGroup as="ul" className={styles.ulHaflheight}>
       {categories.length > 0 && (
         <ListGroup.Item action as="li" className="text-center">
           {showPlus ? (
@@ -70,7 +69,7 @@ const CategorieSelector = () => {
                 <Form.Control
                   name="category"
                   type="text"
-                  placeholder="Nom du produit"
+                  placeholder="Nom"
                   onInput={(e) =>
                     setNewCategory((e.target as HTMLInputElement).value)
                   }

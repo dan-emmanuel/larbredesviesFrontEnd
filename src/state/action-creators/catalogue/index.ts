@@ -26,7 +26,7 @@ import { CatalogTypes } from "../..";
 import axios from "axios";
 
 //Read Actions
-export const getProducts = () => async (dispatch: Dispatch) => {
+export const getProducts = () => async (dispatch: Dispatch<Action>) => {
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}catalog/all`
@@ -40,7 +40,7 @@ export const getProducts = () => async (dispatch: Dispatch) => {
     console.log(error);
   }
 };
-export const getCategories = () => async (dispatch: Dispatch) => {
+export const getCategories = () => async (dispatch: Dispatch<Action>) => {
   try {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}catalog/categories`
@@ -131,6 +131,8 @@ export const updateProduct = (e: {
 }) => {
   try {
     return async (dispatch: any) => {
+      let id;
+
       if (e.newCategory) {
         const newCategory = await axios({
           method: "post",
@@ -142,12 +144,17 @@ export const updateProduct = (e: {
             type: ActionType.UPDATEPRODUCT,
             payload: newCategory?.data?.error,
           });
+        else {
+          id = newCategory?.data?.records?.id;
+        }
       }
+      if (id) e.product.category = id;
       const updated = await axios({
         method: "put",
         url: `${process.env.REACT_APP_API_URL}catalog/product`,
         data: e.product,
       });
+
       if (updated?.data?.error)
         return dispatch({
           type: ActionType.UPDATEPRODUCT,
